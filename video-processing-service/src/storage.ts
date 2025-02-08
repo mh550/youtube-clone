@@ -4,11 +4,11 @@ import ffmpeg from 'fluent-ffmpeg';
 
 const storage = new Storage();
 
-const rawVideoBucketName = "mh550-yt-clone-raw-videos";
-const processedVideoBucketName = "mh550-yt-clone-processed-videos";
+const rawVideoBucketName = "yt-clone-demo-raw-videos";
+const processedVideoBucketName = "yt-clone-demo-process-videos";
 
 const localRawVideoPath = "./raw-videos"
-const localProcessedVideoPath = "./processed-videos"
+const localProcessedVideoPath = "./process-videos"
 
 /**
  * Creates the local directories for the raw and processed video files

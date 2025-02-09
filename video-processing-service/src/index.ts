@@ -1,5 +1,5 @@
 import express from "express";
-import { convertVideo, deleteProcessedVideo, deleteRawVideo, downloadRawVideo, setupDirectories } from "./storage";
+import { convertVideo, deleteProcessedVideo, deleteRawVideo, downloadRawVideo, uploadProcessedVideo, setupDirectories } from "./storage";
 
 setupDirectories();
 
@@ -37,6 +37,18 @@ app.post("/process-video", async (req, res) => {
         res.status(500).send('Internal server error: video processing failed.');
         return;
     }
+
+    // Upload the processed video to Cloud Storage
+    await uploadProcessedVideo(outputFileName);
+
+    // Delete local copies
+    await Promise.all([
+        deleteProcessedVideo(outputFileName),
+        deleteRawVideo(inputFileName)
+    ])
+
+    console.log("Video processing completed successfully.")
+    res.status(200).send("Video processing completed successfully.");
 });
 
 const port = process.env.PORT || 3000

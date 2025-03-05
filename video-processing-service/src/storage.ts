@@ -1,5 +1,5 @@
 import { Storage } from '@google-cloud/storage';
-import fs, { existsSync } from 'fs';
+import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 
 const storage = new Storage();
@@ -7,8 +7,8 @@ const storage = new Storage();
 const rawVideoBucketName = "yt-clone-demo-raw-videos";
 const processedVideoBucketName = "yt-clone-demo-process-videos";
 
-const localRawVideoPath = "./raw-videos"
-const localProcessedVideoPath = "./process-videos"
+const localRawVideoPath = "./raw-videos";
+const localProcessedVideoPath = "./process-videos";
 
 /**
  * Creates the local directories for the raw and processed video files
@@ -32,8 +32,8 @@ export function convertVideo(rawVideoName: string, processedVideoName: string) {
             console.log("Video processing finished successfully.");
             resolve();
         })
-        .on("error", (err) => {
-            console.log(`An error occurred: ${err.message}`);
+        .on("error", function (err: any) {
+            console.log("An error occurred: " + err.message);
             reject(err);        
         })
         .save(`${localProcessedVideoPath}/${processedVideoName}`);
@@ -62,8 +62,8 @@ export async function uploadProcessedVideo(fileName: string) {
     const bucket = storage.bucket(processedVideoBucketName);
     await bucket.upload(`${localProcessedVideoPath}/${fileName}`, {
         destination: fileName
-    })
-    console.log(`${localProcessedVideoPath}/${fileName} uploaded to gs://${processedVideoBucketName}/${fileName}`)
+    });
+    console.log(`${localProcessedVideoPath}/${fileName} uploaded to gs://${processedVideoBucketName}/${fileName}.`);
 
     await bucket.file(fileName).makePublic();
 }

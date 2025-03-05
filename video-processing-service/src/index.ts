@@ -27,12 +27,12 @@ app.post("/process-video", async (req, res) => {
     await downloadRawVideo(inputFileName);
 
     try {
-        convertVideo(inputFileName, outputFileName)
+        await convertVideo(inputFileName, outputFileName);
     } catch(err) {
-        Promise.all([
+        await Promise.all([
             deleteProcessedVideo(outputFileName),
             deleteRawVideo(inputFileName)
-        ])
+        ]);
         console.log(err);
         res.status(500).send('Internal server error: video processing failed.');
         return;
@@ -45,13 +45,14 @@ app.post("/process-video", async (req, res) => {
     await Promise.all([
         deleteProcessedVideo(outputFileName),
         deleteRawVideo(inputFileName)
-    ])
+    ]);
 
-    console.log("Video processing completed successfully.")
+    console.log("Video processing completed successfully.");
     res.status(200).send("Video processing completed successfully.");
+    return;
 });
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Video processing service listening at http://localhost:${port}`);
-})
+});
